@@ -645,17 +645,30 @@
           <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <label class="block font-bold text-slate-700 text-xs">Web App URL ของ Google Apps Script *</label>
+                <label class="block font-bold text-slate-700 text-xs">Web App URL ของ Google Apps Script (URL เครื่องแม่) *</label>
                 <button onclick="toggleGoogleSheetInstructions()" class="text-xs font-bold text-emerald-700 hover:underline">📖 ดูวิธีสร้างและติดตั้ง</button>
               </div>
               <input type="text" id="gSheetWebAppUrlInput" oninput="updateShareableGSheetLinkDisplay()" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 rounded-xl border font-mono text-xs bg-stone-50/50">
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
               <label class="font-bold text-slate-700 text-xs flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" id="gSheetAutoSyncCheckbox" checked onchange="toggleGoogleSheetAutoSync(this.checked)" class="rounded text-emerald-600 focus:ring-emerald-500">
+                <input type="checkbox" id="gSheetAutoSyncCheckbox" checked onchange="toggleGoogleSheetAutoSync(this.checked)" class="rounded text-emerald-600">
                 <span>เปิดใช้งาน Auto-Sync อัตโนมัติ (บันทึก/แก้ไข/ลบ จะซิงค์ทันที)</span>
               </label>
-              <button onclick="saveGoogleSheetConfig()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs">บันทึกการเชื่อมต่อ</button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button onclick="saveGoogleSheetConfig()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition">
+                  💾 บันทึกในเครื่องนี้
+                </button>
+                <button onclick="exportConfiguredHtmlFile()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-black text-white font-black text-xs shadow-xs transition flex items-center gap-1.5" title="ดาวน์โหลดไฟล์ index.html ที่บันทึก URL นี้ถาวร ทุกเครื่องเปิดมาจะจำได้ทันที">
+                  <span>📥 ฝัง URL ถาวร (ดาวน์โหลดไฟล์)</span>
+                </button>
+              </div>
+            </div>
+            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[11px] text-amber-900 flex items-start gap-2">
+              <span class="text-base leading-none">💡</span>
+              <div>
+                <strong>วิธีทำให้ทุกเครื่องจำ URL เครื่องแม่อัตโนมัติ:</strong> กรอก Web App URL ด้านบนแล้วกดปุ่ม <strong>"📥 ฝัง URL ถาวร (ดาวน์โหลดไฟล์)"</strong> นำไฟล์ <code>index.html</code> ที่ดาวน์โหลดได้ไปอัปเดตบนเว็บโฮสติ้ง หลังจากนั้นทุกคนและทุกเครื่องที่เปิดเว็บจะเชื่อมต่อ Google Sheets เครื่องแม่ทันทีโดยไม่ต้องกรอกใหม่อีกเลย!
+              </div>
             </div>
           </div>
 
@@ -1183,8 +1196,8 @@
     ];
 
     let assets = [
-      { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', quantity: 1, status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
-      { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', quantity: 1, status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
+      { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
+      { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
     ];
 
     let transactions = [
@@ -1202,8 +1215,11 @@
     let barChartInstance = null, pieChartInstance = null, doughnutChartInstance = null;
     let execFsBarChartInstance = null, execFsPieChartInstance = null;
 
+    // URL เครื่องแม่เริ่มต้น (ฝังถาวรในโค้ด)
+    const DEFAULT_WEB_APP_URL = '';
+
     let googleSheetConfig = {
-      webAppUrl: '',
+      webAppUrl: DEFAULT_WEB_APP_URL || '',
       autoSync: true
     };
 
@@ -1368,7 +1384,13 @@ function writeSheetRows(ss, n, items) {
     function initStorageAndData() {
       try {
         const sc = localStorage.getItem('cc1971_gsheet_config');
-        if (sc) googleSheetConfig = Object.assign({}, googleSheetConfig, JSON.parse(sc));
+        if (sc) {
+          googleSheetConfig = Object.assign({}, googleSheetConfig, JSON.parse(sc));
+        }
+        // หากในเครื่องยังไม่มีการตั้งค่า แต่มี DEFAULT_WEB_APP_URL ฝังไว้ ให้ใช้ค่าฝังทันที
+        if ((!googleSheetConfig.webAppUrl || googleSheetConfig.webAppUrl === '') && DEFAULT_WEB_APP_URL) {
+          googleSheetConfig.webAppUrl = DEFAULT_WEB_APP_URL;
+        }
         const sa = localStorage.getItem('cc1971_assets');
         if (sa) { const p = JSON.parse(sa); if (Array.isArray(p) && p.length) assets = p; }
         const scmp = localStorage.getItem('cc1971_companies');
@@ -1384,59 +1406,34 @@ function writeSheetRows(ss, n, items) {
       updateGoogleSheetStatusBadge();
     }
 
-    function toggleGoogleSheetAutoSync(checked) {
-      googleSheetConfig.autoSync = checked;
-      saveToLocalStorage();
-      showToast(checked ? 'เปิดใช้งาน Auto-Sync แล้ว' : 'ปิดใช้งาน Auto-Sync แล้ว');
-    }
-
-    function handleClearAllData() {
-      showCustomConfirm('ล้างข้อมูลทั้งหมด', 'คุณต้องการล้างข้อมูลสินทรัพย์และธุรกรรมทั้งหมดให้เป็นศูนย์หรือไม่?', () => {
-        assets = [];
-        transactions = [];
-        saveToLocalStorage();
-        refreshActiveView();
-        showToast('ล้างข้อมูลทั้งหมดเรียบร้อยแล้ว');
-        silentAutoSync();
-      });
-    }
-
-    function handleRestoreMockData() {
-      showCustomConfirm('คืนค่าข้อมูลตัวอย่าง', 'คุณต้องการโหลดข้อมูลตัวอย่างกลับมาหรือไม่?', () => {
-        assets = [
-          { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', quantity: 1, status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
-          { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', quantity: 1, status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
-        ];
-        saveToLocalStorage();
-        refreshActiveView();
-        showToast('คืนค่าข้อมูลตัวอย่างเรียบร้อยแล้ว');
-        silentAutoSync();
-      });
-    }
-
-    function getShareableGSheetUrl() {
-      const currentUrl = window.location.href.split('?')[0].split('#')[0];
-      const sheetUrl = googleSheetConfig.webAppUrl || document.getElementById('gSheetWebAppUrlInput')?.value.trim() || '';
-      if (!sheetUrl) return currentUrl;
-      return currentUrl + '?gsheet=' + encodeURIComponent(sheetUrl);
-    }
-
-    function updateShareableGSheetLinkDisplay() {
-      const input = document.getElementById('gSheetShareableUrlInput');
-      if (input) {
-        input.value = getShareableGSheetUrl();
+    function exportConfiguredHtmlFile() {
+      const currentUrl = document.getElementById('gSheetWebAppUrlInput')?.value.trim() || googleSheetConfig.webAppUrl || '';
+      if (!currentUrl) {
+        showToast('กรุณากรอก Web App URL ก่อนทำการส่งออกไฟล์', false);
+        return;
       }
-    }
+      // ดึงเนื้อหา HTML ทั้งหน้าปัจจุบัน แล้วแทนที่ค่า DEFAULT_WEB_APP_URL ด้วย URL เครื่องแม่
+      let fullHtml = document.documentElement.outerHTML;
+      const regex = /const DEFAULT_WEB_APP_URL\s*=\s*['"][^'"]*['"]\s*;/;
+      const replacement = `const DEFAULT_WEB_APP_URL = '${currentUrl}';`;
+      
+      if (regex.test(fullHtml)) {
+        fullHtml = fullHtml.replace(regex, replacement);
+      } else {
+        fullHtml = fullHtml.replace('let googleSheetConfig = {', `${replacement}\n    let googleSheetConfig = {`);
+      }
 
-    function copyShareableGSheetLink() {
-      const url = getShareableGSheetUrl();
-      const temp = document.createElement('textarea');
-      temp.value = url;
-      document.body.appendChild(temp);
-      temp.select();
-      document.execCommand('copy');
-      temp.remove();
-      showToast('คัดลอกลิงก์แชร์ระบบพร้อม Google Sheets เรียบร้อยแล้ว!');
+      fullHtml = '<!DOCTYPE html>\n' + fullHtml;
+
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+      showToast('ดาวน์โหลดไฟล์ index.html ที่ฝัง URL สำเร็จ! นำไฟล์นี้ไปแทนที่ไฟล์เดิมบนเว็บได้เลย');
     }
 
     function updateGoogleSheetStatusBadge() {
@@ -1454,6 +1451,89 @@ function writeSheetRows(ss, n, items) {
         if (direct) direct.classList.add('hidden');
       }
       updateShareableGSheetLinkDisplay();
+    }
+
+    function updateShareableGSheetLinkDisplay() {
+      const input = document.getElementById('gSheetShareableUrlInput');
+      if (!input) return;
+      const currentUrl = document.getElementById('gSheetWebAppUrlInput')?.value.trim() || googleSheetConfig.webAppUrl || '';
+      if (currentUrl && currentUrl.startsWith('http')) {
+        const base = window.location.href.split('?')[0].split('#')[0];
+        input.value = `${base}?gsheet=${encodeURIComponent(currentUrl)}`;
+      } else {
+        input.value = '';
+        input.placeholder = 'ลิงก์พร้อมแชร์จะแสดงที่นี่เมื่อกรอก Web App URL';
+      }
+    }
+
+    function copyShareableGSheetLink() {
+      const input = document.getElementById('gSheetShareableUrlInput');
+      const currentUrl = document.getElementById('gSheetWebAppUrlInput')?.value.trim() || googleSheetConfig.webAppUrl || '';
+      if (!currentUrl) {
+        showToast('กรุณากรอก Web App URL ก่อนคัดลอกลิงก์แชร์', false);
+        return;
+      }
+      updateShareableGSheetLinkDisplay();
+      if (input && input.value) {
+        input.select();
+        try {
+          document.execCommand('copy');
+          showToast('คัดลอกลิงก์แชร์เรียบร้อยแล้ว ส่งต่อให้ทีมงานเปิดแล้วซิงค์ทันที!');
+        } catch (err) {
+          showToast('ไม่สามารถคัดลอกได้อัตโนมัติ กรุณากดคัดลอกด้วยตนเอง', false);
+        }
+      }
+    }
+
+    function toggleGoogleSheetAutoSync(checked) {
+      googleSheetConfig.autoSync = checked;
+      saveToLocalStorage();
+      showToast(checked ? 'เปิดใช้งาน Auto-Sync อัตโนมัติแล้ว' : 'ปิด Auto-Sync แล้ว (ต้องกด Push/Pull ด้วยตนเอง)');
+    }
+
+    function switchSettingsSubTab(tab) {
+      ['googlesheet', 'companies', 'permissions'].forEach(t => {
+        const panel = document.getElementById(`settingsPanel-${t}`);
+        const btn = document.getElementById(`settingsSubTab-${t}`);
+        if (panel) panel.classList.toggle('hidden', t !== tab);
+        if (btn) {
+          if (t === tab) {
+            btn.className = 'px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold';
+          } else {
+            btn.className = 'px-4 py-2 text-slate-600 rounded-xl text-xs font-bold hover:bg-stone-100';
+          }
+        }
+      });
+      if (tab === 'companies' || tab === 'permissions') {
+        renderSettingsView();
+      }
+    }
+
+    function handleClearAllData() {
+      showCustomConfirm('ยืนยันการล้างข้อมูลทั้งหมด', 'คุณต้องการล้างข้อมูลสินทรัพย์และประวัติธุรกรรมทั้งหมดเป็นศูนย์เพื่อเริ่มใช้งานจริงใช่หรือไม่?', () => {
+        assets = [];
+        transactions = [];
+        saveToLocalStorage();
+        refreshActiveView();
+        showToast('ล้างข้อมูลสินทรัพย์ทั้งหมดเป็นศูนย์เรียบร้อยแล้ว');
+        silentAutoSync();
+      });
+    }
+
+    function handleRestoreMockData() {
+      showCustomConfirm('โหลดข้อมูลตัวอย่าง', 'คุณต้องการโหลดข้อมูลสินทรัพย์ตัวอย่างกลับมาหรือไม่?', () => {
+        assets = [
+          { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
+          { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
+        ];
+        transactions = [
+          { id: 'TX-001', date: '2026-08-10 09:30', assetId: 'CC-IT-001', assetName: 'MacBook Pro', type: 'ยืมใช้งาน', details: 'เบิกใช้งานโปรเจค', person: 'Admin', signatureUrl: '', cost: 0 }
+        ];
+        saveToLocalStorage();
+        refreshActiveView();
+        showToast('โหลดข้อมูลตัวอย่างกลับมาเรียบร้อยแล้ว');
+        silentAutoSync();
+      });
     }
 
     function saveGoogleSheetConfig() {
