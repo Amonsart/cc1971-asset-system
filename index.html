@@ -313,11 +313,6 @@
         </div>
 
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          <button onclick="openNotificationHubModal()" class="relative p-2 rounded-xl border border-slate-200 bg-stone-50 hover:bg-amber-50 text-slate-700 transition" title="ศูนย์แจ้งเตือนประกันและซ่อมบำรุง">
-            <span class="text-sm">🔔</span>
-            <span id="headerNotificationBadge" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[9.5px] font-black flex items-center justify-center shadow-xs hidden">0</span>
-          </button>
-
           <div class="flex items-center gap-2 bg-navy-50/80 border border-navy-200 rounded-xl px-3 py-2 text-xs">
             <span class="text-navy-700 font-bold hidden md:inline">🏢 สังกัด:</span>
             <select id="globalCompanyFilter" onchange="changeGlobalCompanyFilter(this.value)" class="bg-transparent font-black text-navy-900 text-xs focus:outline-none cursor-pointer"></select>
@@ -404,7 +399,7 @@
           <table class="w-full text-left text-xs">
             <thead class="bg-orange-50/50 border-b border-orange-100 font-bold text-slate-600">
               <tr>
-                <th class="p-3">รูป</th><th class="p-3">รหัส</th><th class="p-3">ชื่อ</th><th class="p-3">สังกัด</th><th class="p-3">ผู้ถือครอง</th><th class="p-3 text-right">Cost</th><th class="p-3 text-right">NBV</th><th class="p-3">หมดประกัน</th><th class="p-3">รอบซ่อม</th><th class="p-3 text-center">สถานะ</th><th class="p-3 text-center">จัดการ</th>
+                <th class="p-3">รูป</th><th class="p-3">รหัส</th><th class="p-3">ชื่อ</th><th class="p-3">สังกัด</th><th class="p-3 text-center">จำนวน</th><th class="p-3">ผู้ถือครอง</th><th class="p-3 text-right">Cost</th><th class="p-3 text-right">NBV</th><th class="p-3">หมดประกัน</th><th class="p-3">รอบซ่อม</th><th class="p-3 text-center">สถานะ</th><th class="p-3 text-center">จัดการ</th>
               </tr>
             </thead>
             <tbody id="registryTableBody" class="divide-y divide-slate-100"></tbody>
@@ -629,13 +624,31 @@
             </div>
           </div>
 
+          <!-- กล่องแชร์ลิงก์ให้ผู้อื่นเปิดใช้งานได้ทันทีโดยไม่ต้องตั้งค่าใหม่ -->
+          <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-4 sm:p-5 rounded-2xl border border-emerald-200 shadow-xs space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h5 class="font-black text-emerald-950 text-xs flex items-center gap-1.5">
+                  <span>🚀</span> ลิงก์สำหรับส่งต่อให้ทีมงาน (เปิดแล้วซิงค์ Google Sheets ทันที ไม่ต้องกรอกใหม่)
+                </h5>
+                <p class="text-[11px] text-emerald-800">เมื่อส่งลิงก์นี้ให้ผู้อื่นเปิดในมือถือหรือคอมพิวเตอร์ ระบบจะจดจำการเชื่อมต่อและดึงข้อมูลจาก Google Sheets ให้ทันที 100%</p>
+              </div>
+              <button onclick="copyShareableGSheetLink()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 shrink-0">
+                <span>📋 คัดลอกลิงก์แชร์</span>
+              </button>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="text" id="gSheetShareableUrlInput" readonly onclick="this.select()" class="w-full p-2.5 rounded-xl border border-emerald-300 bg-white font-mono text-[11px] text-emerald-900 select-all cursor-pointer font-bold" placeholder="ลิงก์พร้อมแชร์จะแสดงที่นี่เมื่อกรอก Web App URL">
+            </div>
+          </div>
+
           <div class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-4">
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block font-bold text-slate-700 text-xs">Web App URL ของ Google Apps Script *</label>
                 <button onclick="toggleGoogleSheetInstructions()" class="text-xs font-bold text-emerald-700 hover:underline">📖 ดูวิธีสร้างและติดตั้ง</button>
               </div>
-              <input type="text" id="gSheetWebAppUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 rounded-xl border font-mono text-xs bg-stone-50/50">
+              <input type="text" id="gSheetWebAppUrlInput" oninput="updateShareableGSheetLinkDisplay()" placeholder="https://script.google.com/macros/s/.../exec" class="w-full p-2.5 rounded-xl border font-mono text-xs bg-stone-50/50">
             </div>
             <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100">
               <label class="font-bold text-slate-700 text-xs flex items-center gap-2 cursor-pointer">
@@ -772,7 +785,11 @@
           <div><label class="font-bold text-slate-700 mb-1 block">สถานที่ตั้ง / ห้อง</label><input type="text" id="formLocation" placeholder="เช่น อาคาร A ชั้น 3" class="w-full p-2.5 border border-slate-300 rounded-xl"></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 mb-1 block">จำนวน (ชิ้น/หน่วย) *</label>
+            <input type="number" id="formQuantity" value="1" min="1" max="99999" required class="w-full p-2.5 border border-slate-300 rounded-xl font-black text-center text-brand-700 bg-orange-50/30">
+          </div>
           <div><label class="font-bold text-slate-700 mb-1 block">ผู้ถือครอง / ผู้รับผิดชอบ</label><input type="text" id="formCustodian" placeholder="ชื่อ-นามสกุลพนักงาน" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold"></div>
           <div>
             <label class="font-bold text-slate-700 mb-1 block">สถานะสินทรัพย์</label>
@@ -932,6 +949,7 @@
           <div class="min-w-0 flex-1 w-full space-y-1.5 text-center sm:text-left">
             <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               <span id="passportCode" class="px-2.5 py-0.5 rounded-lg bg-orange-100 text-brand-700 font-mono font-black text-xs"></span>
+              <span id="passportQuantityBadge" class="px-2.5 py-0.5 rounded-lg bg-emerald-100 text-emerald-800 font-bold text-xs border border-emerald-200"></span>
               <span id="passportStatusBadge" class="px-2.5 py-0.5 rounded-lg text-[10.5px] font-bold border"></span>
               <span id="passportCompanyBadge" class="px-2.5 py-0.5 rounded-lg bg-stone-200 text-slate-700 text-[10px] font-bold"></span>
             </div>
@@ -1165,8 +1183,8 @@
     ];
 
     let assets = [
-      { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
-      { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
+      { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', quantity: 1, status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
+      { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', quantity: 1, status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
     ];
 
     let transactions = [
@@ -1366,6 +1384,61 @@ function writeSheetRows(ss, n, items) {
       updateGoogleSheetStatusBadge();
     }
 
+    function toggleGoogleSheetAutoSync(checked) {
+      googleSheetConfig.autoSync = checked;
+      saveToLocalStorage();
+      showToast(checked ? 'เปิดใช้งาน Auto-Sync แล้ว' : 'ปิดใช้งาน Auto-Sync แล้ว');
+    }
+
+    function handleClearAllData() {
+      showCustomConfirm('ล้างข้อมูลทั้งหมด', 'คุณต้องการล้างข้อมูลสินทรัพย์และธุรกรรมทั้งหมดให้เป็นศูนย์หรือไม่?', () => {
+        assets = [];
+        transactions = [];
+        saveToLocalStorage();
+        refreshActiveView();
+        showToast('ล้างข้อมูลทั้งหมดเรียบร้อยแล้ว');
+        silentAutoSync();
+      });
+    }
+
+    function handleRestoreMockData() {
+      showCustomConfirm('คืนค่าข้อมูลตัวอย่าง', 'คุณต้องการโหลดข้อมูลตัวอย่างกลับมาหรือไม่?', () => {
+        assets = [
+          { id: 'CC-IT-001', companyId: 'CC-HQ', name: 'MacBook Pro 16"', category: 'IT & คอมพิวเตอร์', serial: 'SN-001', department: 'IT', location: 'Office', custodian: 'Admin', quantity: 1, status: 'พร้อมใช้', cost: 115900, salvage: 1, lifespan: 3, acquiredDate: '2024-01-15', warrantyDate: '2026-09-30', nextServiceDate: '2026-10-15', imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', lastAuditedDate: '2026-08-10', lastAuditor: 'Admin' },
+          { id: 'CC-VH-001', companyId: 'CC-LOGIS', name: 'รถกระบะ Toyota Revo', category: 'ยานพาหนะ', serial: '3ฒผ-1971', department: 'Logistics', location: 'ลานจอด', custodian: 'User1', quantity: 1, status: 'กำลังใช้งาน', cost: 685000, salvage: 100000, lifespan: 7, acquiredDate: '2022-03-01', warrantyDate: '2025-03-01', nextServiceDate: '2026-09-01', imageUrl: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=400&q=80', lastAuditedDate: '2026-08-01', lastAuditor: 'Admin' }
+        ];
+        saveToLocalStorage();
+        refreshActiveView();
+        showToast('คืนค่าข้อมูลตัวอย่างเรียบร้อยแล้ว');
+        silentAutoSync();
+      });
+    }
+
+    function getShareableGSheetUrl() {
+      const currentUrl = window.location.href.split('?')[0].split('#')[0];
+      const sheetUrl = googleSheetConfig.webAppUrl || document.getElementById('gSheetWebAppUrlInput')?.value.trim() || '';
+      if (!sheetUrl) return currentUrl;
+      return currentUrl + '?gsheet=' + encodeURIComponent(sheetUrl);
+    }
+
+    function updateShareableGSheetLinkDisplay() {
+      const input = document.getElementById('gSheetShareableUrlInput');
+      if (input) {
+        input.value = getShareableGSheetUrl();
+      }
+    }
+
+    function copyShareableGSheetLink() {
+      const url = getShareableGSheetUrl();
+      const temp = document.createElement('textarea');
+      temp.value = url;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      temp.remove();
+      showToast('คัดลอกลิงก์แชร์ระบบพร้อม Google Sheets เรียบร้อยแล้ว!');
+    }
+
     function updateGoogleSheetStatusBadge() {
       const b = document.getElementById('gSheetStatusBadge');
       if (!b) return;
@@ -1380,6 +1453,7 @@ function writeSheetRows(ss, n, items) {
         const direct = document.getElementById('btnOpenSheetDirectly');
         if (direct) direct.classList.add('hidden');
       }
+      updateShareableGSheetLinkDisplay();
     }
 
     function saveGoogleSheetConfig() {
@@ -1615,11 +1689,12 @@ function writeSheetRows(ss, n, items) {
       );
 
       if (!filtered.length) {
-        tb.innerHTML = '<tr><td colspan="11" class="p-8 text-center text-slate-400 font-bold">ไม่พบข้อมูลสินทรัพย์</td></tr>';
+        tb.innerHTML = '<tr><td colspan="12" class="p-8 text-center text-slate-400 font-bold">ไม่พบข้อมูลสินทรัพย์</td></tr>';
         return;
       }
 
       filtered.forEach(a => {
+        const qty = parseInt(a.quantity, 10) || 1;
         const d = calculateTAS16Depreciation(a, 2026);
         const tr = document.createElement('tr');
         tr.className = 'border-b hover:bg-orange-50/30 transition';
@@ -1628,6 +1703,7 @@ function writeSheetRows(ss, n, items) {
           '<td class="p-2 font-mono font-bold text-brand-600 cursor-pointer hover:underline" onclick="openPassportModal(\'' + a.id + '\')">' + a.id + '</td>' +
           '<td class="p-2 font-bold cursor-pointer hover:text-brand-600" onclick="openPassportModal(\'' + a.id + '\')">' + a.name + '<div class="text-[10px] text-slate-400 font-mono">SN: ' + (a.serial || '-') + '</div></td>' +
           '<td class="p-2">' + a.companyId + '</td>' +
+          '<td class="p-2 text-center font-bold text-brand-700 bg-orange-50/30 rounded-lg">' + qty + '</td>' +
           '<td class="p-2">' + (a.custodian || '-') + '</td>' +
           '<td class="p-2 text-right">' + formatCurrency(a.cost) + '</td>' +
           '<td class="p-2 text-right font-bold text-emerald-600">' + formatCurrency(d.nbv) + '</td>' +
@@ -1833,6 +1909,7 @@ function writeSheetRows(ss, n, items) {
     function openAssetModal() {
       document.getElementById('assetForm').reset();
       document.getElementById('formAssetId').value = '';
+      document.getElementById('formQuantity').value = '1';
       setFormImagePreview('');
       document.getElementById('formAcquiredDate').value = new Date().toISOString().split('T')[0];
       refreshAutoCode();
@@ -1851,6 +1928,7 @@ function writeSheetRows(ss, n, items) {
       document.getElementById('formSerial').value = a.serial || '';
       document.getElementById('formDepartment').value = a.department || '';
       document.getElementById('formLocation').value = a.location || '';
+      document.getElementById('formQuantity').value = a.quantity || 1;
       document.getElementById('formCustodian').value = a.custodian || '';
       document.getElementById('formStatus').value = a.status;
       document.getElementById('formCost').value = a.cost;
@@ -1863,7 +1941,13 @@ function writeSheetRows(ss, n, items) {
       document.getElementById('assetModalTitle').textContent = 'แก้ไขข้อมูลสินทรัพย์ [' + a.id + ']';
       document.getElementById('assetModal').classList.remove('hidden');
     }
-    function closeAssetModal() { document.getElementById('assetModal').classList.add('hidden'); }
+
+    function closeAssetModal() {
+      const modal = document.getElementById('assetModal');
+      if (modal) {
+        modal.classList.add('hidden');
+      }
+    }
 
     async function handleSaveAsset(e) {
       e.preventDefault();
@@ -1883,6 +1967,7 @@ function writeSheetRows(ss, n, items) {
         serial: document.getElementById('formSerial').value.trim(),
         department: document.getElementById('formDepartment').value.trim(),
         location: document.getElementById('formLocation').value.trim(),
+        quantity: parseInt(document.getElementById('formQuantity').value, 10) || 1,
         custodian: document.getElementById('formCustodian').value.trim(),
         status: document.getElementById('formStatus').value,
         cost: parseFloat(document.getElementById('formCost').value) || 0,
@@ -2021,6 +2106,7 @@ function writeSheetRows(ss, n, items) {
           serial: '-',
           department: '-',
           location: '-',
+          quantity: 1,
           custodian: '-',
           status: 'พร้อมใช้',
           cost: 0,
@@ -2046,6 +2132,7 @@ function writeSheetRows(ss, n, items) {
       document.getElementById('passportImg').src = a.imageUrl || 'https://placehold.co/400';
       document.getElementById('passportName').textContent = a.name;
       document.getElementById('passportCode').textContent = a.id;
+      document.getElementById('passportQuantityBadge').textContent = 'จำนวน: ' + (a.quantity || 1) + ' หน่วย';
       document.getElementById('passportSerial').textContent = 'S/N: ' + (a.serial || '-');
       document.getElementById('passportCompanyBadge').textContent = a.companyId;
       document.getElementById('passportLocation').textContent = a.location || '-';
@@ -3405,6 +3492,22 @@ function writeSheetRows(ss, n, items) {
     }
 
     function handleInitialDeepLink() {
+      // ตรวจจับพารามิเตอร์ gsheet หรือ sheetUrl เพื่อบันทึกการเชื่อมต่ออัตโนมัติ
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const incomingGSheet = urlParams.get('gsheet') || urlParams.get('sheetUrl');
+        if (incomingGSheet && incomingGSheet.startsWith('http')) {
+          googleSheetConfig.webAppUrl = incomingGSheet.trim();
+          googleSheetConfig.autoSync = true;
+          saveToLocalStorage();
+          const input = document.getElementById('gSheetWebAppUrlInput');
+          if (input) input.value = googleSheetConfig.webAppUrl;
+          updateGoogleSheetStatusBadge();
+          showToast('🔗 เชื่อมต่อ Google Sheet จากลิงก์อัตโนมัติเรียบร้อย!');
+          pullDataFromGoogleSheets(true);
+        }
+      } catch (e) {}
+
       if (window.location.hash && window.location.hash.includes('executive')) {
         setTimeout(openExecutiveFullScreen, 100);
         return;
