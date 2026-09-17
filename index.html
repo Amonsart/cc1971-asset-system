@@ -1215,8 +1215,10 @@
     let barChartInstance = null, pieChartInstance = null, doughnutChartInstance = null;
     let execFsBarChartInstance = null, execFsPieChartInstance = null;
 
-    // URL เครื่องแม่เริ่มต้น (ฝังถาวรในโค้ด)
-    const DEFAULT_WEB_APP_URL = '';
+    // =========================================================================
+    // 🌐 URL เครื่องแม่เริ่มต้น (วาง Web App URL ของคุณที่นี่เพื่อให้ทุกเครื่องจำได้ถาวร)
+    // =========================================================================
+    const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyUIPyqX7x6F8QEV5cS_H6HKL0AHZ61m8Q5QKzZcbzFtsFjHzwNDvouYjlYLNd7pgZo/exec';
 
     let googleSheetConfig = {
       webAppUrl: DEFAULT_WEB_APP_URL || '',
@@ -1387,9 +1389,10 @@ function writeSheetRows(ss, n, items) {
         if (sc) {
           googleSheetConfig = Object.assign({}, googleSheetConfig, JSON.parse(sc));
         }
-        // หากในเครื่องยังไม่มีการตั้งค่า แต่มี DEFAULT_WEB_APP_URL ฝังไว้ ให้ใช้ค่าฝังทันที
-        if ((!googleSheetConfig.webAppUrl || googleSheetConfig.webAppUrl === '') && DEFAULT_WEB_APP_URL) {
-          googleSheetConfig.webAppUrl = DEFAULT_WEB_APP_URL;
+        // หากในโค้ดมีการฝัง DEFAULT_WEB_APP_URL ไว้ ให้ใช้ค่านี้เป็นหลักเสมอ
+        if (DEFAULT_WEB_APP_URL && DEFAULT_WEB_APP_URL.trim().startsWith('http')) {
+          googleSheetConfig.webAppUrl = DEFAULT_WEB_APP_URL.trim();
+          saveToLocalStorage();
         }
         const sa = localStorage.getItem('cc1971_assets');
         if (sa) { const p = JSON.parse(sa); if (Array.isArray(p) && p.length) assets = p; }
@@ -1412,6 +1415,7 @@ function writeSheetRows(ss, n, items) {
         showToast('กรุณากรอก Web App URL ก่อนทำการส่งออกไฟล์', false);
         return;
       }
+      
       // ดึงเนื้อหา HTML ทั้งหน้าปัจจุบัน แล้วแทนที่ค่า DEFAULT_WEB_APP_URL ด้วย URL เครื่องแม่
       let fullHtml = document.documentElement.outerHTML;
       const regex = /const DEFAULT_WEB_APP_URL\s*=\s*['"][^'"]*['"]\s*;/;
@@ -1433,7 +1437,7 @@ function writeSheetRows(ss, n, items) {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(a.href);
-      showToast('ดาวน์โหลดไฟล์ index.html ที่ฝัง URL สำเร็จ! นำไฟล์นี้ไปแทนที่ไฟล์เดิมบนเว็บได้เลย');
+      showToast('ดาวน์โหลดไฟล์ index.html ที่ฝัง URL เรียบร้อย! นำไฟล์นี้ไปแทนที่ไฟล์เดิมบนเว็บได้เลย');
     }
 
     function updateGoogleSheetStatusBadge() {
