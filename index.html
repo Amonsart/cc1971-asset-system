@@ -724,124 +724,176 @@
   </div>
 
   <!-- Asset Modal -->
-  <div id="assetModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 hidden no-print">
-    <div class="bg-white rounded-3xl shadow-2xl border border-stone-200 w-full max-w-2xl overflow-hidden flex flex-col max-h-[92vh]">
+  <div id="assetModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-5 hidden no-print">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-200 w-full max-w-2xl overflow-hidden flex flex-col h-[94vh] sm:h-auto sm:max-h-[92vh] animate-in fade-in slide-in-from-bottom-4 sm:slide-in-from-bottom-0 duration-200">
       <div class="p-4 sm:p-5 bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 text-white flex items-center justify-between shrink-0">
-        <h3 id="assetModalTitle" class="font-black text-sm">ลงทะเบียนสินทรัพย์ใหม่</h3>
-        <button onclick="closeAssetModal()" class="text-white/80 hover:text-white p-1 rounded-lg">✕</button>
+        <div class="flex items-center gap-2">
+          <span class="text-base sm:text-lg">📦</span>
+          <h3 id="assetModalTitle" class="font-black text-sm sm:text-base">ลงทะเบียนสินทรัพย์ใหม่</h3>
+        </div>
+        <button onclick="closeAssetModal()" class="text-white/80 hover:text-white p-1 rounded-lg text-lg sm:text-base leading-none">✕</button>
       </div>
 
-      <form id="assetForm" onsubmit="handleSaveAsset(event)" class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs">
+      <form id="assetForm" onsubmit="handleSaveAsset(event)" class="flex-1 flex flex-col overflow-hidden text-xs">
         <input type="hidden" id="formAssetId">
         <input type="hidden" id="formImageData">
 
-        <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200">
-          <label class="block font-bold text-slate-700 mb-2">📷 รูปภาพสินทรัพย์ (Asset Photo)</label>
-          <div class="flex items-center gap-4">
-            <div id="formAssetImageContainer" class="w-20 h-20 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-brand-500 transition relative" onclick="triggerAssetImageFileSelect()">
-              <img id="formAssetImagePreview" class="w-full h-full object-cover hidden" alt="Asset Preview">
-              <div id="formAssetImagePlaceholder" class="text-slate-400 text-center p-1">
-                <span class="text-xl block">📷</span>
-                <span class="text-[9px] font-bold">เลือกรูป</span>
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5 sm:space-y-4">
+          <!-- 📷 รูปภาพสินทรัพย์ -->
+          <div class="p-3 sm:p-4 rounded-2xl bg-stone-50 border border-stone-200">
+            <label class="block font-bold text-slate-700 mb-1.5 sm:mb-2 text-xs">📷 รูปภาพสินทรัพย์ (Asset Photo)</label>
+            <div class="flex items-center gap-3 sm:gap-4">
+              <div id="formAssetImageContainer" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0 cursor-pointer hover:border-brand-500 transition relative" onclick="triggerAssetImageFileSelect()">
+                <img id="formAssetImagePreview" class="w-full h-full object-cover hidden" alt="Asset Preview">
+                <div id="formAssetImagePlaceholder" class="text-slate-400 text-center p-1">
+                  <span class="text-lg sm:text-xl block">📷</span>
+                  <span class="text-[9px] font-bold">เลือกรูป</span>
+                </div>
+              </div>
+
+              <div class="flex-1 space-y-1.5 sm:space-y-2 min-w-0">
+                <input type="file" id="formImageFileInput" accept="image/*" onchange="handleDirectImageUpload(event)" class="hidden">
+                <div class="flex flex-wrap gap-1.5 sm:gap-2">
+                  <button type="button" onclick="triggerAssetImageFileSelect()" class="px-3 py-1.5 sm:py-2 rounded-xl bg-white border border-slate-300 hover:bg-stone-100 text-slate-700 font-bold text-[11px] sm:text-xs transition shadow-xs">เลือกรูป / ถ่ายภาพ</button>
+                  <button type="button" id="btnRemoveAssetImage" onclick="removeAssetImage()" class="px-3 py-1.5 sm:py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-[11px] sm:text-xs transition hidden">ลบรูป</button>
+                </div>
+                <p class="text-[10px] sm:text-[10.5px] text-slate-400 truncate">บีบอัดรูปภาพให้อัตโนมัติ</p>
               </div>
             </div>
-
-            <div class="flex-1 space-y-2">
-              <input type="file" id="formImageFileInput" accept="image/*" onchange="handleDirectImageUpload(event)" class="hidden">
-              <div class="flex flex-wrap gap-2">
-                <button type="button" onclick="triggerAssetImageFileSelect()" class="px-3 py-2 rounded-xl bg-white border border-slate-300 hover:bg-stone-100 text-slate-700 font-bold text-xs transition shadow-xs">เลือกรูปจากเครื่อง</button>
-                <button type="button" id="btnRemoveAssetImage" onclick="removeAssetImage()" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs transition hidden">ลบรูปภาพ</button>
-              </div>
-              <p class="text-[10.5px] text-slate-500">ระบบจะทำการบีบอัดและปรับขนาดรูปภาพให้อัตโนมัติเพื่อประหยัดพื้นที่คลาวด์</p>
-            </div>
           </div>
-        </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <div class="flex justify-between items-center mb-1">
-              <label class="font-bold text-slate-700">รหัสสินทรัพย์ *</label>
-              <span onclick="refreshAutoCode()" class="text-[10.5px] text-brand-600 font-bold cursor-pointer hover:underline">⚡ สร้างรหัสใหม่อัตโนมัติ</span>
-            </div>
-            <input type="text" id="formCode" required class="w-full p-2.5 border border-slate-300 rounded-xl font-mono font-bold text-brand-700">
-          </div>
-          <div>
-            <label class="font-bold text-slate-700 mb-1 block">บริษัทเจ้าของกรรมสิทธิ์ *</label>
-            <select id="formCompanyId" onchange="handleFormCompanyOrCategoryChange()" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold"></select>
-          </div>
-        </div>
-
-        <div>
-          <label class="font-bold text-slate-700 mb-1 block">ชื่อรายการทรัพย์สิน *</label>
-          <input type="text" id="formName" required placeholder="เช่น โน้ตบุ๊ก Apple MacBook Pro 16 นิ้ว" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="font-bold text-slate-700 mb-1 block">หมวดหมู่</label>
-            <select id="formCategory" onchange="handleFormCompanyOrCategoryChange()" class="w-full p-2.5 border border-slate-300 rounded-xl">
-              <option value="IT & คอมพิวเตอร์">IT & คอมพิวเตอร์</option>
-              <option value="อุปกรณ์สำนักงาน">อุปกรณ์สำนักงาน</option>
-              <option value="ยานพาหนะ">ยานพาหนะ</option>
-              <option value="เครื่องจักร & อุปกรณ์โรงงาน">เครื่องจักร & อุปกรณ์โรงงาน</option>
-              <option value="เฟอร์นิเจอร์สำนักงาน">เฟอร์นิเจอร์สำนักงาน</option>
-            </select>
-          </div>
-          <div>
-            <label class="font-bold text-slate-700 mb-1 block">หมายเลขเครื่อง (Serial Number)</label>
-            <input type="text" id="formSerial" placeholder="เช่น SN-2026-X99" class="w-full p-2.5 border border-slate-300 rounded-xl font-mono">
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="font-bold text-slate-700 mb-1 block">แผนกที่ใช้งาน</label><input type="text" id="formDepartment" placeholder="เช่น ฝ่ายการเงิน / IT" class="w-full p-2.5 border border-slate-300 rounded-xl"></div>
-          <div><label class="font-bold text-slate-700 mb-1 block">สถานที่ตั้ง / ห้อง</label><input type="text" id="formLocation" placeholder="เช่น อาคาร A ชั้น 3" class="w-full p-2.5 border border-slate-300 rounded-xl"></div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label class="font-bold text-slate-700 mb-1 block">จำนวน (ชิ้น/หน่วย) *</label>
-            <input type="number" id="formQuantity" value="1" min="1" max="99999" required class="w-full p-2.5 border border-slate-300 rounded-xl font-black text-center text-brand-700 bg-orange-50/30">
-          </div>
-          <div><label class="font-bold text-slate-700 mb-1 block">ผู้ถือครอง / ผู้รับผิดชอบ</label><input type="text" id="formCustodian" placeholder="ชื่อ-นามสกุลพนักงาน" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold"></div>
-          <div>
-            <label class="font-bold text-slate-700 mb-1 block">สถานะสินทรัพย์</label>
-            <select id="formStatus" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold">
-              <option value="พร้อมใช้">พร้อมใช้</option>
-              <option value="กำลังใช้งาน">กำลังใช้งาน</option>
-              <option value="ส่งซ่อมบำรุง">ส่งซ่อมบำรุง</option>
-              <option value="ตัดจำหน่าย">ตัดจำหน่าย</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
-          <div class="text-[11px] font-black text-amber-950 flex items-center gap-1.5"><span>🛡️</span> วันหมดประกัน & รอบตรวจเช็คสภาพ</div>
+          <!-- รหัส และ บริษัท -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label class="font-bold text-slate-700 mb-1 block">วันหมดอายุการรับประกัน</label>
-              <input type="date" id="formWarrantyDate" class="w-full p-2 border border-amber-300 rounded-xl font-bold bg-white">
+              <div class="flex justify-between items-center mb-1">
+                <label class="font-bold text-slate-700 text-xs">รหัสสินทรัพย์ *</label>
+                <span onclick="refreshAutoCode()" class="text-[11px] sm:text-[10.5px] text-brand-600 font-bold cursor-pointer hover:underline">⚡ สร้างรหัสอัตโนมัติ</span>
+              </div>
+              <input type="text" id="formCode" required class="w-full p-2.5 sm:p-2.5 border border-slate-300 rounded-xl font-mono font-bold text-brand-700 text-sm sm:text-xs bg-orange-50/20 sm:bg-white">
             </div>
             <div>
-              <label class="font-bold text-slate-700 mb-1 block">รอบตรวจเช็คสภาพถัดไป</label>
-              <input type="date" id="formNextServiceDate" class="w-full p-2 border border-amber-300 rounded-xl font-bold bg-white">
+              <label class="font-bold text-slate-700 mb-1 block text-xs">บริษัทเจ้าของกรรมสิทธิ์ *</label>
+              <select id="formCompanyId" onchange="handleFormCompanyOrCategoryChange()" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-slate-800 text-sm sm:text-xs"></select>
+            </div>
+          </div>
+
+          <!-- ชื่อรายการ -->
+          <div>
+            <label class="font-bold text-slate-700 mb-1 block text-xs">ชื่อรายการทรัพย์สิน *</label>
+            <input type="text" id="formName" required placeholder="เช่น โน้ตบุ๊ก Apple MacBook Pro 16 นิ้ว" class="w-full p-2.5 sm:p-2.5 border border-slate-300 rounded-xl font-bold text-slate-900 text-sm sm:text-xs">
+          </div>
+
+          <!-- หมวดหมู่ & จำนวน -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">หมวดหมู่</label>
+              <select id="formCategory" onchange="handleFormCompanyOrCategoryChange()" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm sm:text-xs font-medium">
+                <option value="IT & คอมพิวเตอร์">IT & คอมพิวเตอร์</option>
+                <option value="อุปกรณ์สำนักงาน">อุปกรณ์สำนักงาน</option>
+                <option value="ยานพาหนะ">ยานพาหนะ</option>
+                <option value="เครื่องจักร & อุปกรณ์โรงงาน">เครื่องจักร & อุปกรณ์โรงงาน</option>
+                <option value="เฟอร์นิเจอร์สำนักงาน">เฟอร์นิเจอร์สำนักงาน</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">จำนวน (หน่วย) *</label>
+              <input type="number" id="formQuantity" value="1" min="1" max="99999" required class="w-full p-2.5 border border-slate-300 rounded-xl font-black text-center text-brand-700 bg-orange-50/30 text-sm sm:text-xs">
+            </div>
+          </div>
+
+          <!-- ผู้ถือครอง & ที่ตั้งจัดวาง -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">ผู้ถือครอง / ผู้รับผิดชอบ</label>
+              <input type="text" id="formCustodian" placeholder="ชื่อ-นามสกุลพนักงาน" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-sm sm:text-xs">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">สถานที่ตั้ง / ห้อง</label>
+              <input type="text" id="formLocation" placeholder="เช่น อาคาร A ชั้น 3" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm sm:text-xs">
+            </div>
+          </div>
+
+          <!-- ราคาทุน & วันที่ได้มา (ข้อมูลการเงินเบื้องต้น) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">ราคาทุนตั้งต้น (฿) *</label>
+              <input type="number" id="formCost" required min="0" step="0.01" placeholder="0.00" class="w-full p-2.5 border border-slate-300 rounded-xl font-black text-brand-800 text-sm sm:text-xs bg-orange-50/20 sm:bg-white">
+            </div>
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">วันที่ได้มา *</label>
+              <input type="date" id="formAcquiredDate" required class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-sm sm:text-xs">
+            </div>
+          </div>
+
+          <!-- ปุ่มขยายรายละเอียดเพิ่มเติม (เฉพาะบนมือถือ) -->
+          <div class="sm:hidden pt-1">
+            <button type="button" onclick="toggleMobileAssetDetails()" class="w-full py-2.5 px-3.5 rounded-xl border border-dashed border-slate-300 bg-stone-100/70 hover:bg-stone-200/60 text-slate-700 font-bold text-xs flex items-center justify-between transition">
+              <span id="mobileAssetDetailsToggleLabel" class="flex items-center gap-1.5">
+                <span>⚙️</span> กรอกข้อมูลเพิ่มเติม (S/N, ประกัน, ค่าเสื่อม TAS16)
+              </span>
+              <span id="mobileAssetDetailsToggleIcon" class="text-slate-400">▼</span>
+            </button>
+          </div>
+
+          <!-- ข้อมูลเพิ่มเติม: บนคอมพิวเตอร์จะแสดงเต็มเสมอ / บนมือถือสามารถกดขยายได้ -->
+          <div id="assetModalExtraFields" class="hidden sm:!block space-y-3.5 sm:space-y-4 pt-1 sm:pt-0">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="font-bold text-slate-700 mb-1 block text-xs">หมายเลขเครื่อง (Serial Number)</label>
+                <input type="text" id="formSerial" placeholder="เช่น SN-2026-X99" class="w-full p-2.5 border border-slate-300 rounded-xl font-mono text-sm sm:text-xs">
+              </div>
+              <div>
+                <label class="font-bold text-slate-700 mb-1 block text-xs">แผนกที่ใช้งาน</label>
+                <input type="text" id="formDepartment" placeholder="เช่น ฝ่ายการเงิน / IT" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm sm:text-xs">
+              </div>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700 mb-1 block text-xs">สถานะสินทรัพย์</label>
+              <select id="formStatus" class="w-full p-2.5 border border-slate-300 rounded-xl font-bold text-sm sm:text-xs">
+                <option value="พร้อมใช้">พร้อมใช้</option>
+                <option value="กำลังใช้งาน">กำลังใช้งาน</option>
+                <option value="ส่งซ่อมบำรุง">ส่งซ่อมบำรุง</option>
+                <option value="ตัดจำหน่าย">ตัดจำหน่าย</option>
+              </select>
+            </div>
+
+            <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-2">
+              <div class="text-[11px] font-black text-amber-950 flex items-center gap-1.5"><span>🛡️</span> วันหมดประกัน & รอบตรวจเช็คสภาพ</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="font-bold text-slate-700 mb-1 block text-xs">วันหมดอายุการรับประกัน</label>
+                  <input type="date" id="formWarrantyDate" class="w-full p-2 border border-amber-300 rounded-xl font-bold bg-white text-sm sm:text-xs">
+                </div>
+                <div>
+                  <label class="font-bold text-slate-700 mb-1 block text-xs">รอบตรวจเช็คสภาพถัดไป</label>
+                  <input type="date" id="formNextServiceDate" class="w-full p-2 border border-amber-300 rounded-xl font-bold bg-white text-sm sm:text-xs">
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-orange-50/70 p-3.5 rounded-2xl border border-orange-200 space-y-2">
+              <div class="text-[11px] font-black text-brand-900">💰 พารามิเตอร์ตัดค่าเสื่อมราคา (TAS 16)</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="font-bold text-slate-700 mb-1 block text-xs">ราคาซาก (Salvage ฿)</label>
+                  <input type="number" id="formSalvage" value="1" min="0" step="0.01" class="w-full p-2 border rounded-xl font-bold text-sm sm:text-xs bg-white">
+                </div>
+                <div>
+                  <label class="font-bold text-slate-700 mb-1 block text-xs">อายุการใช้งาน (ปี)</label>
+                  <input type="number" id="formLifespan" value="5" min="1" max="50" class="w-full p-2 border rounded-xl font-bold text-sm sm:text-xs bg-white">
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-orange-50/70 p-3.5 rounded-2xl border border-orange-200 space-y-2">
-          <div class="text-[11px] font-black text-brand-900">💰 ข้อมูลมูลค่าและการตัดค่าเสื่อมราคา (TAS 16)</div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div><label class="font-bold text-slate-700 mb-1 block">ราคาทุนตั้งต้น (฿) *</label><input type="number" id="formCost" required min="0" step="0.01" class="w-full p-2 border rounded-xl font-bold"></div>
-            <div><label class="font-bold text-slate-700 mb-1 block">ราคาซาก (Salvage ฿)</label><input type="number" id="formSalvage" value="1" min="0" step="0.01" class="w-full p-2 border rounded-xl font-bold"></div>
-            <div><label class="font-bold text-slate-700 mb-1 block">อายุการใช้งาน (ปี)</label><input type="number" id="formLifespan" value="5" min="1" max="50" class="w-full p-2 border rounded-xl font-bold"></div>
-          </div>
-          <div><label class="font-bold text-slate-700 mb-1 block">วันที่ได้มา *</label><input type="date" id="formAcquiredDate" required class="w-full p-2 border rounded-xl font-bold"></div>
-        </div>
-
-        <div class="text-right pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
-          <button type="button" onclick="closeAssetModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-stone-50">ยกเลิก</button>
-          <button type="submit" class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-md transition">บันทึกสินทรัพย์</button>
+        <!-- Sticky Footer Buttons -->
+        <div class="p-3 sm:p-4 bg-stone-50 border-t border-slate-200 flex items-center justify-end gap-2 shrink-0">
+          <button type="button" onclick="closeAssetModal()" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-300 bg-white text-slate-700 font-bold hover:bg-stone-100 text-xs transition">ยกเลิก</button>
+          <button type="submit" class="flex-1 sm:flex-none px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-white font-black rounded-xl shadow-md transition text-xs flex items-center justify-center gap-1.5">
+            <span>💾</span> บันทึกสินทรัพย์
+          </button>
         </div>
       </form>
     </div>
@@ -1998,7 +2050,41 @@ function writeSheetRows(ss, n, items) {
       document.getElementById('formAcquiredDate').value = new Date().toISOString().split('T')[0];
       refreshAutoCode();
       document.getElementById('assetModalTitle').textContent = 'ลงทะเบียนสินทรัพย์ใหม่';
+      setMobileAssetDetailsExpanded(false);
       document.getElementById('assetModal').classList.remove('hidden');
+    }
+
+    function toggleMobileAssetDetails() {
+      const extra = document.getElementById('assetModalExtraFields');
+      const label = document.getElementById('mobileAssetDetailsToggleLabel');
+      const icon = document.getElementById('mobileAssetDetailsToggleIcon');
+      if (!extra) return;
+      const isHidden = extra.classList.contains('hidden');
+      if (isHidden) {
+        extra.classList.remove('hidden');
+        if (label) label.innerHTML = '<span>▲</span> ซ่อนข้อมูลเพิ่มเติม';
+        if (icon) icon.textContent = '▲';
+      } else {
+        extra.classList.add('hidden');
+        if (label) label.innerHTML = '<span>⚙️</span> กรอกข้อมูลเพิ่มเติม (S/N, ประกัน, ค่าเสื่อม TAS16)';
+        if (icon) icon.textContent = '▼';
+      }
+    }
+
+    function setMobileAssetDetailsExpanded(expand = false) {
+      const extra = document.getElementById('assetModalExtraFields');
+      const label = document.getElementById('mobileAssetDetailsToggleLabel');
+      const icon = document.getElementById('mobileAssetDetailsToggleIcon');
+      if (!extra) return;
+      if (expand) {
+        extra.classList.remove('hidden');
+        if (label) label.innerHTML = '<span>▲</span> ซ่อนข้อมูลเพิ่มเติม';
+        if (icon) icon.textContent = '▲';
+      } else {
+        extra.classList.add('hidden');
+        if (label) label.innerHTML = '<span>⚙️</span> กรอกข้อมูลเพิ่มเติม (S/N, ประกัน, ค่าเสื่อม TAS16)';
+        if (icon) icon.textContent = '▼';
+      }
     }
 
     function openEditAssetModal(id) {
@@ -2023,6 +2109,7 @@ function writeSheetRows(ss, n, items) {
       document.getElementById('formNextServiceDate').value = a.nextServiceDate || '';
       setFormImagePreview(a.imageUrl || '');
       document.getElementById('assetModalTitle').textContent = 'แก้ไขข้อมูลสินทรัพย์ [' + a.id + ']';
+      setMobileAssetDetailsExpanded(false);
       document.getElementById('assetModal').classList.remove('hidden');
     }
 
